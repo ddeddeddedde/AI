@@ -6,12 +6,13 @@
     <title>AI Searcher 14.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style type="text/css">
-        @media (max-width: 640px) { /* Dispositivos con ancho máximo de 640px (típico de móviles) */
+        @media (max-width: 1080px) { /* Dispositivos con ancho máximo de 640px (típico de móviles) */
             th, td {
                 padding: 1px !important; /* Ajusta el padding de las celdas de cabecera y cuerpo */
             }
-            input, select {
+            input, select, label, textarea, div.flex {
                 padding: 1px !important; /* Ajusta el padding de los campos de filtro */
+                margin-bottom: 5px !important;
             }
             table {
                 font-size: 0.8rem; /* Reduce el tamaño de la fuente */
@@ -19,6 +20,9 @@
             th, td, #modal {
                 font-size: 0.75rem; /* Reduce aún más el tamaño de la fuente de las celdas */
             }
+        }
+        #cog{
+            font-size: 25px;
         }
         .blur {
             filter: blur(5px);
@@ -106,7 +110,6 @@
                 <input type="url" id="toolUrl" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded">
 
 
-                <label class="block mb-2">Dificultad:</label>
 
                 <div class="flex space-x-4 mb-4">
                     <div class="flex-1">
@@ -182,7 +185,7 @@
                     <th class="py-3 px-4 hidden sm:table-cell cursor-pointer" onclick="sortTable(7)"><span class="sort-icon"> </span>CONTRAS</th>
                     <th class="py-3 px-4 ">
                             <!-- Icono de Engranaje -->
-                            <button onclick="toggleMenu()" class="text-gray-400 hover:text-gray-300 transition"> ⚙️ </button>
+                            <button id="cog" onclick="toggleMenu()" class="text-gray-400 hover:text-gray-300 transition"> ⚙️ </button>
                     </th>
                 </tr>
                 <tr class="border-b border-gray-700">
