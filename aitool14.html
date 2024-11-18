@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Searcher 14.0</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style type="text/css">
+        .blur {
+            filter: blur(5px);
+        }
+        .sort-icon{
+            color: cornflowerblue;
+            padding-right: 5px;
+        }
+        .sorted-column {
+            background-color: #4a5568; /* Color de fondo para la cabecera ordenada */
+            color: #ffffff; /* Color del texto */
+        }
+        #dropdownMenu{
+            background: #374151;
+            box-shadow: 15px 15px 8px rgba(0, 0, 0, 0.5);
+        }
+        #dropdownMenu :hover{
+            background: #435065;
+        }
+        .text-center.mb-6 {
+            display: flex;
+            justify-content: flex-end; /* Alinea a la derecha */
+        }
+
+        #toolCounter {
+            font-weight: bold;
+        }
+        .counter-box {
+            background-color: #e2e8f0; /* Color claro */
+            color: #374151; /* Texto oscuro para contraste */
+            padding: 0.25rem 0.5rem; /* Espaciado dentro de la caja */
+            border-radius: 0.5rem; /* Bordes redondeados */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200 min-h-screen flex items-center justify-center">
+<div id="mainContent" class="container mx-auto px-4 py-8">
+    <div class="text-center mb-8">
+        <!-- Título de la Aplicación -->
+        <h1 class="text-3xl font-bold text-gray-100 tracking-wide">
+            AI Searcher 14.0
+        </h1>
+        <p class="text-sm text-gray-400 mt-1">Gestiona herramientas de inteligencia artificial eficientemente.</p>
+    </div>
+    
+    <!-- Ícono de Engranaje para Menú Desplegable -->
+    <div class="relative text-center mb-6">
+        <!-- Menú Desplegable -->
+        <div id="dropdownMenu" class="absolute right-0 mt-2 w-40 bg-gray-800 rounded-md shadow-lg hidden">
+            <button onclick="exportData()" class="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-t-md">
+                🔼 Exportar
+            </button>
+            <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
+            <button onclick="document.getElementById('importFile').click()" class="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-700">
+                🔽 Importar
+            </button>
+            <button onclick="openModal()" class="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-b-md">
+                ➕ New AI
+            </button>
+        </div>
+    </div>
+    
+    <!-- Contador de Herramientas -->
+    <div class="text-center mb-6">
+        <p class="text-sm text-gray-500 counter-box">
+            <span id="toolCounter" class="text-base font-semibold text-blue-400">0</span> <span >herramientas disponibles
+        </p>
+    </div>
+    
+
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-gray-800 p-6 rounded-lg w-11/12 md:w-1/2 lg:w-1/3">
+            <h2 class="text-xl font-bold mb-4">Añadir Nueva Herramienta</h2>
+            <form id="addToolForm">
+                <label class="block mb-2">Fecha:</label>
+                <input type="date" id="toolFecha" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded">
+
+                <label class="block mb-2">Nombre:</label>
+                <input type="text" id="toolName" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded" required>
+                <label class="block mb-2">URL:</label>
+                <input type="url" id="toolUrl" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded">
+
+
+                <label class="block mb-2">Dificultad:</label>
+                <select id="toolDificultad" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded">
+                    <option value="Muy baja">Muy baja</option>
+                    <option value="Baja">Baja</option>
+                    <option value="Media">Media</option>
+                    <option value="Alta">Alta</option>
+                    <option value="Muy alta">Muy alta</option>
+                </select>
+
+                <label class="block mb-2">Precio:</label>
+                <select id="toolPrecio" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded">
+                    <option value="Gratis">Gratis</option>
+                    <option value="De pago">De pago</option>
+                    <option value="Gratis o de pago">Gratis o de pago</option>
+                </select>
+
+                <label class="block mb-2">Tipo:</label>
+                <select id="toolTipo" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded">
+                    <option value="Conversacional">Conversacional</option>
+                    <option value="Música">Música</option>
+                    <option value="Sonido">Sonido</option>
+                    <option value="Sonido/Video">Sonido/Video</option> 
+                    <option value="Sonido/Texto">Sonido/Texto</option>
+                    <option value="Imagen">Imagen</option>
+                    <option value="Imagen3D">Imagen3D</option>
+                    <option value="Imagen/Video">Imagen/Video</option> 
+                    <option value="Imagen/Texto">Imagen/Texto</option> 
+                    <option value="Programación">Programación</option>
+                    <option value="Texto">Texto</option>
+                    <option value="Texto/Organización">Texto/Organización</option>
+                    <option value="Video">Video</option>
+                </select>
+
+                <label class="block mb-2">Descripción:</label>
+                <textarea id="toolDescripcion" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded" required></textarea>
+
+                <label class="block mb-2">PROS:</label>
+                <textarea id="toolPros" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded" required></textarea>
+
+                <label class="block mb-2">CONTRAS:</label>
+                <textarea id="toolContras" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded" required></textarea>
+
+                <label class="block mb-2">Comentario:</label>
+                <textarea id="toolComentario" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded"></textarea>
+
+                <div class="flex justify-end mt-4">
+                    <button type="button" onclick="closeModal()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2">Cancelar</button>
+                    <button type="button" onclick="addTool()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Añadir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-gray-800 rounded-lg">
+            <thead>
+                <tr class="border-b border-gray-700">
+                    <th class="py-3 px-4 cursor-pointer hidden sm:table-cell" onclick="sortTable(0)"><span class="sort-icon"> </span>Fecha</th>
+                    <th class="py-3 px-4 cursor-pointer" onclick="sortTable(1)"><span class="sort-icon"> </span>Nombre </th>
+                    <th class="py-3 px-4 cursor-pointer" onclick="sortTable(2)"><span class="sort-icon"> </span>Dificultad</th>
+                    <th class="py-3 px-4 cursor-pointer" onclick="sortTable(3)"><span class="sort-icon"> </span>Precio</th>
+                    <th class="py-3 px-4 cursor-pointer" onclick="sortTable(4)"><span class="sort-icon"> </span>Tipo</th>
+                    <th class="py-3 px-4 hidden sm:table-cell cursor-pointer" onclick="sortTable(5)"><span class="sort-icon"> </span>Descripción</th>
+                    <th class="py-3 px-4 hidden sm:table-cell cursor-pointer" onclick="sortTable(6)"><span class="sort-icon"> </span>PROS</th>
+                    <th class="py-3 px-4 hidden sm:table-cell cursor-pointer" onclick="sortTable(7)"><span class="sort-icon"> </span>CONTRAS</th>
+                    <th class="py-3 px-4 hidden sm:table-cell cursor-pointer" onclick="sortTable(8)"><span class="sort-icon"> </span>Comentario</th>
+                    <th class="py-3 px-4">
+                            <!-- Icono de Engranaje -->
+                            <button onclick="toggleMenu()" class="text-gray-400 hover:text-gray-300 transition"> ⚙️ </button>
+                    </th>
+                </tr>
+                <tr class="border-b border-gray-700">
+                    <th class="hidden sm:table-cell"></th>
+                    <th class="py-2 px-4">
+                        <input id="filterInput" type="text" placeholder="Filtrar por nombre..."
+                            class="bg-gray-700 text-gray-200 px-2 py-1 rounded border border-gray-600 w-full"
+                            oninput="filterTable()">
+                    </th>
+                    <th class="py-2 px-4">
+                        <select id="dificultadFilter" class="bg-gray-700 text-gray-200 px-2 py-1 rounded w-full" onchange="filterTable()">
+                            <option value="">Todos</option>
+                        </select>
+                    </th>
+                    <th class="py-2 px-4">
+                        <select id="precioFilter" class="bg-gray-700 text-gray-200 px-2 py-1 rounded w-full" onchange="filterTable()">
+                            <option value="">Todos</option>
+                        </select>
+                    </th>
+                    <th class="py-2 px-4">
+                        <select id="tipoFilter" class="bg-gray-700 text-gray-200 px-2 py-1 rounded w-full" onchange="filterTable()">
+                            <option value="">Todos</option>
+                        </select>
+                    </th>
+                    <th class="py-2 px-4">
+                        <input id="descriptionFilter" type="text" placeholder="Filtrar por descripción..." class="bg-gray-700 text-gray-200 px-2 py-1 rounded border border-gray-600 w-full" oninput="filterTable()">
+                    </th>
+                    <th class="py-2 px-4">
+                        <input id="prosFilter" type="text" placeholder="Filtrar por PROS..." class="bg-gray-700 text-gray-200 px-2 py-1 rounded border border-gray-600 w-full" oninput="filterTable()">
+                    </th>
+                    <th class="py-2 px-4">
+                        <input id="consFilter" type="text" placeholder="Filtrar por CONTRAS..." class="bg-gray-700 text-gray-200 px-2 py-1 rounded border border-gray-600 w-full" oninput="filterTable()">
+                    </th>
+                    <th colspan="2"></th>
+                </tr>
+            </thead>
+            <tbody id="toolsTable" class="divide-y divide-gray-700">
+            <!-- Table Rows -->
+            </tbody>
+        </table>
+    </div>
+
+
+</div>
+<!-- Modal de Confirmación -->
+<div id="confirmModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-gray-800 p-6 rounded-lg text-center">
+        <h2 id="confirmMessage" class="text-white text-lg font-bold mb-4">¿Estás seguro de que deseas borrar la herramienta?</h2>
+        <button id="confirmDelete" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2">
+            Confirmar
+        </button>
+        <button onclick="closeConfirmModal()" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+            Cancelar
+        </button>
+    </div>
+</div>
+<script>
+        const typeIcons = {
+            "Conversacional": "💬 Conversacional",
+            "Imagen": "🖼️ Imagen",
+            "Sonido": "🎵 Sonido",
+            "Video": "🎥 Video",
+            "Texto": "📄 Texto",
+            "Programación": "💻 Programación",
+            "Música": "🎶 Música",
+            "Sonido/Video": "🎵🎥 Sonido/Video",
+            "Sonido/Texto": "🎵📄 Sonido/Texto",
+            "Imagen/Video": "🖼️🎥 Imagen/Video",
+            "Imagen/Texto": "🖼️📄 Imagen/Texto",
+            "Texto/Organización": "📄 Texto/Organización",
+            "Imagen3D":"🧊 Imagen3D"
+        };
+
+        const difficultyColors = {
+            "Muy baja": "text-green-500",
+            "Baja": "text-green-400",
+            "Media": "text-yellow-500",
+            "Alta": "text-orange-500",
+            "Muy alta": "text-red-500"
+        };
+
+        toolsData = JSON.parse(localStorage.getItem("toolsData")) || [/* Añade más datos de ejemplo si es necesario*/];
+        let lastSortedColumn = null; // Última columna ordenada
+        let sortOrder = 'asc'; // Dirección inicial de ordenación
+        let deleteIndex = null; // Índice de la fila a borrar
+        let editIndex = null; // Variable global para almacenar el índice de la fila en edición
+
+        function toggleMenu() {
+            const menu = document.getElementById('dropdownMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Cierra el menú al hacer clic fuera de él
+        window.onclick = function(event) {
+            const menu = document.getElementById('dropdownMenu');
+            if (!event.target.closest('button')) {
+                menu.classList.add('hidden');
+            }
+        };
+
+        
+        function updateToolCounter() {
+            const toolCounter = document.getElementById("toolCounter");
+            toolCounter.innerText = toolsData.length; // Actualiza el contador con el número de herramientas
+        }
+
+        function loadTable() {
+            const tableBody = document.getElementById("toolsTable");
+            tableBody.innerHTML = "";
+
+            toolsData = JSON.parse(localStorage.getItem("toolsData")) || [];
+
+            const dificultadOptions = new Set();
+            const precioOptions = new Set();
+            const tipoOptions = new Set();
+
+            toolsData.forEach((tool, index) => {
+                paintRow(tableBody, tool, index, true, dificultadOptions, precioOptions, tipoOptions)
+            });
+
+            populateDropdown("dificultadFilter", dificultadOptions);
+            populateDropdown("precioFilter", precioOptions);
+            populateDropdown("tipoFilter", tipoOptions);
+            updateToolCounter();
+            // Aplicar filtros activos después de recargar la tabla
+            filterTable();
+        }
+
+        function paintRow(tableBody, tool, index, isAdding, dificultadOptions, precioOptions, tipoOptions){
+            
+            const tipoText = typeIcons[tool.tipo] || tool.tipo;
+                const precioColor = tool.precio.includes("Gratis") ? "text-green-500" : "";
+                const precioDificultad = difficultyColors[tool.dificultad];
+                const storedComment = tool.comentario || "";
+                const tipoIcon = tipoText.split(" ")[0]; // Extraer solo el icono (primer carácter)
+
+
+                tableBody.innerHTML += `
+                        <tr class="${index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}">
+                            <td class="py-3 px-4 hidden sm:table-cell">${tool.fecha || ""}</td>
+                            <td class="py-3 px-4">
+                                ${tool.nombre}
+                                ${tool.url ? `<br><a href="https://${tool.url}" class="text-blue-400 underline" target="_blank">${tool.url}</a>` : ""}
+                            </td>
+                            <td class="py-3 px-4 ${precioDificultad}">${tool.dificultad}</td>
+                            <td class="py-3 px-4 ${precioColor}">${tool.precio}</td>
+                            <td class="py-3 px-4">
+                                <span class="sm:hidden">${tipoIcon}</span> <!-- Icono solo en pantallas pequeñas -->
+                                <span class="hidden sm:inline">${tipoText}</span> <!-- Texto completo en pantallas medianas y grandes -->
+                            </td>
+                            <td class="py-3 px-4 hidden sm:table-cell">${tool.descripcion}</td>
+                            <td class="py-3 px-4 hidden sm:table-cell">${tool.pros}</td>
+                            <td class="py-3 px-4 hidden sm:table-cell">${tool.contras}</td>
+                            
+                            <td class="py-3 px-4 hidden sm:table-cell">
+                                <textarea class="bg-gray-700 w-full rounded border border-gray-600 px-2 py-1 "
+                                    oninput="saveComment('${tool.nombre}', this.value)">${storedComment}</textarea>
+                            </td>
+                            <td>
+                                <button onclick="editRow('${tool.nombre}')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded" style="margin-bottom: 5px;">
+                                    ✒️
+                                </button>
+                                <button onclick="showConfirmModal('${tool.nombre}')" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded">
+                                    🗑️
+                                </button>                            
+                            </td>
+                        </tr>
+                    `;
+                if (isAdding){
+                    dificultadOptions.add(tool.dificultad);
+                    precioOptions.add(tool.precio);
+                    tipoOptions.add(tool.tipo);
+                }
+        }
+
+        function filterTable() {
+            const nameFilter = document.getElementById("filterInput").value.toLowerCase();
+            const dificultadFilter = document.getElementById("dificultadFilter").value;
+            const precioFilter = document.getElementById("precioFilter").value;
+            const tipoFilter = document.getElementById("tipoFilter").value;
+            const descriptionFilter = document.getElementById("descriptionFilter").value.toLowerCase();
+            const prosFilter = document.getElementById("prosFilter").value.toLowerCase();
+            const consFilter = document.getElementById("consFilter").value.toLowerCase();
+
+            const filteredTools = toolsData.filter(tool => {
+                return (
+                    (!nameFilter || tool.nombre.toLowerCase().includes(nameFilter)) &&
+                    (!dificultadFilter || tool.dificultad === dificultadFilter) &&
+                    (!precioFilter || tool.precio.toLowerCase().includes(precioFilter.toLowerCase())) &&
+                    (!tipoFilter || tool.tipo.toLowerCase().includes(tipoFilter.toLowerCase())) &&
+                    (!descriptionFilter || tool.descripcion.toLowerCase().includes(descriptionFilter)) &&
+                    (!prosFilter || tool.pros.toLowerCase().includes(prosFilter)) &&
+                    (!consFilter || tool.contras.toLowerCase().includes(consFilter))
+                );
+            });
+
+            document.getElementById("toolsTable").innerHTML = "";
+            filteredTools.forEach((tool, index) => {
+                paintRow(document.getElementById("toolsTable"), tool, index, false)
+            });
+        }
+
+        /*
+        Buscar la herramienta en toolsData por nombre y devuelve en indice
+        */
+        function getIndex(nombre){
+           
+            const index = toolsData.findIndex(tool => tool.nombre === nombre);
+            if (index === -1) {
+                alert("Herramienta no encontrada");
+                return;
+            }
+
+            return index;
+        }
+
+        function editRow(nombre) {
+            //const toolsData = JSON.parse(localStorage.getItem("toolsData")) || [];
+
+            const index = getIndex(nombre);
+
+            const tool = toolsData[index];
+
+            // Cargar los datos de la herramienta en el formulario del modal
+            document.getElementById("toolName").value = tool.nombre;
+            document.getElementById("toolUrl").value = tool.url || ""; // Cargar la URL
+            document.getElementById("toolDificultad").value = tool.dificultad;
+            document.getElementById("toolPrecio").value = tool.precio;
+            document.getElementById("toolTipo").value = tool.tipo;
+            document.getElementById("toolDescripcion").value = tool.descripcion;
+            document.getElementById("toolPros").value = tool.pros;
+            document.getElementById("toolContras").value = tool.contras;
+            document.getElementById("toolComentario").value = tool.comentario || "";
+
+            // Convertir la fecha al formato adecuado para el input de tipo date
+            if (tool.fecha) {
+                const fechaFormateada = new Date(tool.fecha).toISOString().split('T')[0];
+                document.getElementById("toolFecha").value = fechaFormateada;
+            }
+
+            editIndex = index; // Guardar el índice de la herramienta que estamos editando
+            document.getElementById("modal").classList.remove("hidden"); // Mostrar el modal
+        }
+
+        function saveComment(nombre, comment) {
+            const index = getIndex(nombre);
+            toolsData[index].comentario = comment;
+            localStorage.setItem("toolsData", JSON.stringify(toolsData));
+        }
+
+        function openModal() {
+            document.getElementById("modal").classList.remove("hidden");
+            document.getElementById("addToolForm").reset();
+
+            //Close the toggle Menu
+            const menu = document.getElementById('dropdownMenu');
+            menu.classList.add('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById("modal").classList.add("hidden");
+            document.getElementById("addToolForm").reset(); // Limpiar el formulario
+            editIndex = null; // Resetear el índice de edición
+        }
+
+        function addTool() {
+            const nombre = document.getElementById("toolName").value;
+            const url = document.getElementById("toolUrl").value;
+            const dificultad = document.getElementById("toolDificultad").value;
+            const precio = document.getElementById("toolPrecio").value;
+            const tipo = document.getElementById("toolTipo").value;
+            const descripcion = document.getElementById("toolDescripcion").value;
+            const pros = document.getElementById("toolPros").value;
+            const contras = document.getElementById("toolContras").value;
+            const comentario = document.getElementById("toolComentario").value || "";;
+            let fecha = document.getElementById("toolFecha").value || "";//new Date().toISOString().split('T')[0];
+
+            //const toolsData = JSON.parse(localStorage.getItem("toolsData")) || [];
+
+            if (editIndex !== null) {
+                // Actualizar la herramienta existente
+                toolsData[editIndex] = { fecha, nombre, url, dificultad, precio, tipo, descripcion, pros, contras, comentario };
+                editIndex = null; // Restablecer el índice de edición
+            } else {
+                // Añadir una nueva herramienta
+                fecha = new Date().toISOString().split('T')[0];
+                toolsData.push({ fecha, nombre, url, dificultad, precio, tipo, descripcion, pros, contras, comentario });
+            }
+
+            localStorage.setItem("toolsData", JSON.stringify(toolsData)); // Guardar en localStorage
+            loadTable(); // Recargar la tabla
+            closeModal(); // Cerrar el modal
+        }
+
+        function sortTable(columnIndex) {            
+            const tableHeaders = document.querySelectorAll("th");
+
+            // Limpiar los iconos y el color de todas las columnas
+            tableHeaders.forEach((header, index) => {
+                if(header.querySelector(".sort-icon")){
+                    header.querySelector(".sort-icon").textContent = ""; // Eliminar el icono
+                    header.classList.remove("sorted-column"); // Quitar el estilo de la columna ordenada
+                }
+            });
+
+            // Alternar la dirección de orden si se vuelve a hacer clic en la misma columna
+            if (lastSortedColumn === columnIndex) {
+                sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortOrder = 'asc'; // Resetear a ascendente al cambiar de columna
+            }
+            lastSortedColumn = columnIndex; // Actualizar la última columna ordenada
+
+            toolsData.sort((a, b) => {
+                let valA, valB;
+
+                switch (columnIndex) {
+                    case 0: // Ordenar por Fecha
+                        valA = a.fecha ? new Date(a.fecha) : "";
+                        valB = b.fecha ? new Date(b.fecha) : "";
+                        break;
+                    case 1: // Ordenar por Nombre
+                        valA = a.nombre ? a.nombre.toLowerCase() : "";
+                        valB = b.nombre ? b.nombre.toLowerCase() : "";
+                        break;
+                    case 2: // Ordenar por Dificultad
+                        valA = a.dificultad ? a.dificultad.toLowerCase() : "";
+                        valB = b.dificultad ? b.dificultad.toLowerCase() : "";
+                        break;
+                    case 3: // Ordenar por Precio
+                        valA = a.precio ? a.precio.toLowerCase() : "";
+                        valB = b.precio ? b.precio.toLowerCase() : "";
+                        break;
+                    case 4: // Ordenar por Tipo
+                        valA = a.tipo ? a.tipo.toLowerCase() : "";
+                        valB = b.tipo ? b.tipo.toLowerCase() : "";
+                        break;
+                    default:
+                        return 0;
+                }
+
+                if (valA < valB) return sortOrder === 'asc' ? -1 : 1;
+                if (valA > valB) return sortOrder === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            localStorage.setItem("toolsData", JSON.stringify(toolsData));
+            loadTable();
+
+            // Mostrar el icono de orden actual en la cabecera correspondiente y aplicar el color
+            const icon = sortOrder === 'asc' ? '▲' : '▼';
+            tableHeaders[columnIndex].querySelector(".sort-icon").textContent = icon;
+            tableHeaders[columnIndex].classList.add("sorted-column"); // Añadir la clase de estilo
+        }
+
+
+        function populateDropdown(id, options) {
+            const dropdown = document.getElementById(id);
+            dropdown.innerHTML = `<option value="">Todos</option>`;
+            options.forEach(option => {
+                dropdown.innerHTML += `<option value="${option}">${option}</option>`;
+            });
+        }
+
+        function exportData() {
+            const tools = JSON.parse(localStorage.getItem("toolsData")) || [];
+            const blob = new Blob([JSON.stringify(tools, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "toolsData.json";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    localStorage.setItem("toolsData", JSON.stringify(data));
+                    loadTable(); // Cargar la tabla después de importar los datos
+                } catch (error) {
+                    alert("Error al importar el archivo. Asegúrate de que es un archivo JSON válido.");
+                }
+            };
+
+            if (file) {
+                reader.readAsText(file);
+            }
+        }
+
+        function showConfirmModal(nombre) {
+            deleteIndex = getIndex(nombre); // Guarda el índice de la fila a borrar
+            // Mostrar el nombre de la herramienta en el mensaje de confirmación
+            document.getElementById("confirmMessage").innerText = `¿Estás seguro de que deseas borrar la herramienta "${nombre}"?`;
+            document.getElementById("confirmModal").classList.remove("hidden"); // Muestra el modal
+            document.getElementById("mainContent").classList.add("blur");
+        }
+
+        function closeConfirmModal() {
+            document.getElementById("confirmModal").classList.add("hidden"); // Oculta el modal
+            deleteIndex = null; // Restablece el índice
+            document.getElementById("mainContent").classList.remove("blur");
+        }
+
+        function confirmDelete() {
+            if (deleteIndex !== null) {
+                // Verifica que el índice esté dentro del rango
+                if (deleteIndex >= 0 && deleteIndex < toolsData.length) {
+                    toolsData.splice(deleteIndex, 1); // Elimina la herramienta en el índice especificado
+                    localStorage.setItem("toolsData", JSON.stringify(toolsData)); // Actualiza localStorage
+                    loadTable(); // Recarga la tabla para mostrar el cambio
+                }
+
+                closeConfirmModal(); // Cierra el modal
+            }
+        }
+
+        document.getElementById("confirmDelete").addEventListener("click", confirmDelete);// Asocia confirmDelete al botón de confirmación del modal al cargar la página
+        window.onload = loadTable;
+
+    </script>
+</body>
+</html>
