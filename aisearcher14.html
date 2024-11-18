@@ -16,7 +16,7 @@
             table {
                 font-size: 0.8rem; /* Reduce el tamaño de la fuente */
             }
-            th, td {
+            th, td, #modal {
                 font-size: 0.75rem; /* Reduce aún más el tamaño de la fuente de las celdas */
             }
         }
@@ -74,6 +74,9 @@
             <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
             <button onclick="document.getElementById('importFile').click()" class="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-700">
                 🔽 Importar
+            </button>
+            <button onclick="importDefaultData()" class="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-700">
+                🔽 Importar (por defecto)
             </button>
             <button onclick="openModal()" class="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-b-md">
                 ➕ New AI
@@ -236,6 +239,9 @@
         </button>
     </div>
 </div>
+
+
+
 <script>
         const typeIcons = {
             "Conversacional": "💬 Conversacional",
@@ -261,6 +267,8 @@
             "Muy alta": "text-red-500"
         };
 
+        const URL = "https://ddeddeddedde.github.io/AI/backup_2024-11-18.json";
+
         toolsData = JSON.parse(localStorage.getItem("toolsData")) || [/* Añade más datos de ejemplo si es necesario*/];
         let lastSortedColumn = null; // Última columna ordenada
         let sortOrder = 'asc'; // Dirección inicial de ordenación
@@ -270,6 +278,26 @@
         function toggleMenu() {
             const menu = document.getElementById('dropdownMenu');
             menu.classList.toggle('hidden');
+        }
+
+        function importDefaultData() {
+
+            fetch(URL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Error al cargar los datos de la URL");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    localStorage.setItem("toolsData", JSON.stringify(data)); // Guarda los datos en localStorage
+                    loadTable(); // Carga la tabla con los nuevos datos
+                    alert("Datos importados correctamente desde la URL.");
+                })
+                .catch(error => {
+                    console.error("Error al importar datos:", error);
+                    alert("Hubo un problema al importar los datos.");
+                });
         }
 
         // Cierra el menú al hacer clic fuera de él
