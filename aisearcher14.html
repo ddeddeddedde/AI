@@ -104,37 +104,47 @@
 
 
                 <label class="block mb-2">Dificultad:</label>
-                <select id="toolDificultad" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded">
-                    <option value="Muy baja">Muy baja</option>
-                    <option value="Baja">Baja</option>
-                    <option value="Media">Media</option>
-                    <option value="Alta">Alta</option>
-                    <option value="Muy alta">Muy alta</option>
-                </select>
 
-                <label class="block mb-2">Precio:</label>
-                <select id="toolPrecio" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded">
-                    <option value="Gratis">Gratis</option>
-                    <option value="De pago">De pago</option>
-                    <option value="Gratis o de pago">Gratis o de pago</option>
-                </select>
+                <div class="flex space-x-4 mb-4">
+                    <div class="flex-1">
+                        <label class="block mb-2">Dificultad:</label>
+                        <select id="toolDificultad" class="w-full px-3 py-2 bg-gray-700 text-gray-200 rounded">
+                            <option value="Muy baja">Muy baja</option>
+                            <option value="Baja">Baja</option>
+                            <option value="Media">Media</option>
+                            <option value="Alta">Alta</option>
+                            <option value="Muy alta">Muy alta</option>
+                        </select>
+                    </div>
 
-                <label class="block mb-2">Tipo:</label>
-                <select id="toolTipo" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded">
-                    <option value="Conversacional">Conversacional</option>
-                    <option value="Música">Música</option>
-                    <option value="Sonido">Sonido</option>
-                    <option value="Sonido/Video">Sonido/Video</option> 
-                    <option value="Sonido/Texto">Sonido/Texto</option>
-                    <option value="Imagen">Imagen</option>
-                    <option value="Imagen3D">Imagen3D</option>
-                    <option value="Imagen/Video">Imagen/Video</option> 
-                    <option value="Imagen/Texto">Imagen/Texto</option> 
-                    <option value="Programación">Programación</option>
-                    <option value="Texto">Texto</option>
-                    <option value="Texto/Organización">Texto/Organización</option>
-                    <option value="Video">Video</option>
-                </select>
+                    <div class="flex-1">
+                        <label class="block mb-2">Precio:</label>
+                        <select id="toolPrecio" class="w-full px-3 py-2 bg-gray-700 text-gray-200 rounded">
+                            <option value="Gratis">Gratis</option>
+                            <option value="De pago">De pago</option>
+                            <option value="Gratis o de pago">Gratis o de pago</option>
+                        </select>
+                    </div>
+
+                    <div class="flex-1">
+                        <label class="block mb-2">Tipo:</label>
+                        <select id="toolTipo" class="w-full px-3 py-2 bg-gray-700 text-gray-200 rounded">
+                            <option value="Conversacional">Conversacional</option>
+                            <option value="Música">Música</option>
+                            <option value="Sonido">Sonido</option>
+                            <option value="Sonido/Video">Sonido/Video</option> 
+                            <option value="Sonido/Texto">Sonido/Texto</option>
+                            <option value="Imagen">Imagen</option>
+                            <option value="Imagen3D">Imagen3D</option>
+                            <option value="Imagen/Video">Imagen/Video</option> 
+                            <option value="Imagen/Texto">Imagen/Texto</option> 
+                            <option value="Programación">Programación</option>
+                            <option value="Texto">Texto</option>
+                            <option value="Texto/Organización">Texto/Organización</option>
+                            <option value="Video">Video</option>
+                        </select>   
+                    </div>
+                </div>
 
                 <label class="block mb-2">Descripción:</label>
                 <textarea id="toolDescripcion" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded" required></textarea>
@@ -145,8 +155,6 @@
                 <label class="block mb-2">CONTRAS:</label>
                 <textarea id="toolContras" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded" required></textarea>
 
-                <label class="block mb-2">Comentario:</label>
-                <textarea id="toolComentario" class="w-full mb-4 px-3 py-2 bg-gray-700 text-gray-200 rounded"></textarea>
 
                 <div class="flex justify-end mt-4">
                     <button type="button" onclick="closeModal()" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2">Cancelar</button>
@@ -169,7 +177,6 @@
                     <th class="py-3 px-4 hidden sm:table-cell cursor-pointer" onclick="sortTable(5)"><span class="sort-icon"> </span>Descripción</th>
                     <th class="py-3 px-4 hidden sm:table-cell cursor-pointer" onclick="sortTable(6)"><span class="sort-icon"> </span>PROS</th>
                     <th class="py-3 px-4 hidden sm:table-cell cursor-pointer" onclick="sortTable(7)"><span class="sort-icon"> </span>CONTRAS</th>
-                    <th class="py-3 px-4 hidden sm:table-cell cursor-pointer" onclick="sortTable(8)"><span class="sort-icon"> </span>Comentario</th>
                     <th class="py-3 px-4 ">
                             <!-- Icono de Engranaje -->
                             <button onclick="toggleMenu()" class="text-gray-400 hover:text-gray-300 transition"> ⚙️ </button>
@@ -306,7 +313,6 @@
             const tipoText = typeIcons[tool.tipo] || tool.tipo;
                 const precioColor = tool.precio.includes("Gratis") ? "text-green-500" : "";
                 const precioDificultad = difficultyColors[tool.dificultad];
-                const storedComment = tool.comentario || "";
                 const tipoIcon = tipoText.split(" ")[0]; // Extraer solo el icono (primer carácter)
 
 
@@ -327,10 +333,6 @@
                             <td class="py-3 px-4 hidden sm:table-cell">${tool.pros}</td>
                             <td class="py-3 px-4 hidden sm:table-cell">${tool.contras}</td>
                             
-                            <td class="py-3 px-4 hidden sm:table-cell">
-                                <textarea class="bg-gray-700 w-full rounded border border-gray-600 px-2 py-1 "
-                                    oninput="saveComment('${tool.nombre}', this.value)">${storedComment}</textarea>
-                            </td>
                             <td>
                                 <button onclick="editRow('${tool.nombre}')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded" style="margin-bottom: 5px;">
                                     ✒️
@@ -405,7 +407,6 @@
             document.getElementById("toolDescripcion").value = tool.descripcion;
             document.getElementById("toolPros").value = tool.pros;
             document.getElementById("toolContras").value = tool.contras;
-            document.getElementById("toolComentario").value = tool.comentario || "";
 
             // Convertir la fecha al formato adecuado para el input de tipo date
             if (tool.fecha) {
@@ -415,12 +416,6 @@
 
             editIndex = index; // Guardar el índice de la herramienta que estamos editando
             document.getElementById("modal").classList.remove("hidden"); // Mostrar el modal
-        }
-
-        function saveComment(nombre, comment) {
-            const index = getIndex(nombre);
-            toolsData[index].comentario = comment;
-            localStorage.setItem("toolsData", JSON.stringify(toolsData));
         }
 
         function openModal() {
@@ -447,19 +442,18 @@
             const descripcion = document.getElementById("toolDescripcion").value;
             const pros = document.getElementById("toolPros").value;
             const contras = document.getElementById("toolContras").value;
-            const comentario = document.getElementById("toolComentario").value || "";;
             let fecha = document.getElementById("toolFecha").value || "";//new Date().toISOString().split('T')[0];
 
             //const toolsData = JSON.parse(localStorage.getItem("toolsData")) || [];
 
             if (editIndex !== null) {
                 // Actualizar la herramienta existente
-                toolsData[editIndex] = { fecha, nombre, url, dificultad, precio, tipo, descripcion, pros, contras, comentario };
+                toolsData[editIndex] = { fecha, nombre, url, dificultad, precio, tipo, descripcion, pros, contras };
                 editIndex = null; // Restablecer el índice de edición
             } else {
                 // Añadir una nueva herramienta
                 fecha = new Date().toISOString().split('T')[0];
-                toolsData.push({ fecha, nombre, url, dificultad, precio, tipo, descripcion, pros, contras, comentario });
+                toolsData.push({ fecha, nombre, url, dificultad, precio, tipo, descripcion, pros, contras });
             }
 
             localStorage.setItem("toolsData", JSON.stringify(toolsData)); // Guardar en localStorage
