@@ -24,6 +24,9 @@
                 width: 100% !important;
                 max-width: 100% !important;
             }
+            thead tr:nth-child(2) {
+                top: 39px !important; /* Ajusta según la altura de la primera fila del encabezado */
+            }
         }
         #cog{
             font-size: 25px;
@@ -42,6 +45,7 @@
         #dropdownMenu{
             background: #374151;
             box-shadow: 15px 15px 8px rgba(0, 0, 0, 0.5);
+            z-index: 20;
         }
         #dropdownMenu :hover{
             background: #435065;
@@ -60,20 +64,71 @@
             padding: 0.25rem 0.5rem; /* Espaciado dentro de la caja */
             border-radius: 0.5rem; /* Bordes redondeados */
         }
+
+        /* Encabezados principales de la tabla */
+        thead tr:first-child th {
+            background-color: #2d3748; /* Un color más oscuro */
+            color: #ffffff; /* Texto blanco */
+        }
+
+        /* Filtros debajo de los encabezados */
+        thead tr:nth-child(2) th {
+            background-color: #4a5568; /* Un color más claro */
+            color: #ffffff; /* Texto blanco */
+        }
+        
+        /* Fijar cabecera */
+        thead th, thead tr {
+            position: sticky;
+            top: 0;
+            z-index: 10; /* Asegura que esté encima de las filas */
+            background-color: #374151; /* Fondo oscuro como el resto de la tabla */
+        }
+
+        /* Filtros fijos debajo de la cabecera */
+        thead tr:nth-child(2) {
+            top: 61px; /* Ajusta según la altura de la primera fila del encabezado */
+        }
+
+        /* Contenedor de la tabla con scroll */
+        .table-container {
+            max-height: 840px; /* Altura de la tabla */
+            overflow-y: auto; /* Scroll vertical para las filas */
+            overflow-x: hidden; /* Sin scroll horizontal extra */
+        }
+        .counter-box {
+            display: flex; /* Asegura que el texto y el número estén en línea */
+            align-items: center; /* Centra verticalmente */
+            background-color: #1f2937; /* Fondo oscuro */
+            color: #ffffff; /* Color del texto */
+            padding: 0.5rem 1rem; /* Espaciado interno */
+            border-radius: 0.375rem; /* Bordes redondeados */
+        }
+        #appTittle {
+            margin-bottom: 5px;
+            padding: 5px 15px 5px 15px;
+            border: solid 1px #555555;
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-gray-200 min-h-screen flex items-center justify-center">
+
 <div id="mainContent" class="container mx-auto px-4 py-8">
-    <div class="text-center mb-8">
-        <!-- Título de la Aplicación -->
-        <h1 class="text-3xl font-bold text-gray-100 tracking-wide">
-            AI Searcher 14.0
-        </h1>
-        <p class="text-sm text-gray-400 mt-1">Gestiona herramientas de inteligencia artificial eficientemente.</p>
+    <div id="appTittle" class="flex items-center justify-between mb-8">
+        <div>
+            <!-- Título y subtítulo -->
+            <h1 class="text-xl md:text-2xl font-bold text-gray-100 tracking-wide">AI Searcher 14.0</h1>
+            <p class="text-sm md:text-base text-gray-400 mt-1">Gestiona herramientas de inteligencia artificial eficientemente.</p>
+        </div>
+        <!-- Contador -->
+        <div class="counter-box bg-gray-700 text-white px-4 py-2 rounded flex items-center">
+            <span class="text-base font-semibold text-blue-400" id="toolCounter">0</span>
+            <span class="ml-2 text-sm">herramientas disponibles</span>
+        </div>
     </div>
     
     <!-- Ícono de Engranaje para Menú Desplegable -->
-    <div class="relative text-center mb-6">
+    <div class="relative text-center">
         <!-- Menú Desplegable -->
         <div id="dropdownMenu" class="absolute right-0 mt-2 w-40 bg-gray-800 rounded-md shadow-lg hidden">
             <button onclick="exportData()" class="w-full text-left px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-t-md">
@@ -91,14 +146,6 @@
             </button>
         </div>
     </div>
-    
-    <!-- Contador de Herramientas -->
-    <div class="text-center mb-6">
-        <p class="text-sm text-gray-500 counter-box">
-            <span id="toolCounter" class="text-base font-semibold text-blue-400">0</span> <span >herramientas disponibles
-        </p>
-    </div>
-    
 
     <!-- Modal -->
     <div id="modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
@@ -175,7 +222,7 @@
     </div>
 
     <!-- Table -->
-    <div class="overflow-x-auto">
+    <div class="table-container">
         <table class="min-w-full bg-gray-800 rounded-lg">
             <thead>
                 <tr class="border-b border-gray-700">
@@ -200,17 +247,17 @@
                             oninput="filterTable()">
                     </th>
                     <th class="py-2 px-4">
-                        <select id="dificultadFilter" class="bg-gray-700 text-gray-200 px-2 py-1 rounded w-full" onchange="filterTable()">
+                        <select id="dificultadFilter" class="cursor-pointer bg-gray-700 text-gray-200 px-2 py-1 rounded w-full" onchange="filterTable()">
                             <option value="">Todos</option>
                         </select>
                     </th>
                     <th class="py-2 px-4">
-                        <select id="precioFilter" class="bg-gray-700 text-gray-200 px-2 py-1 rounded w-full" onchange="filterTable()">
+                        <select id="precioFilter" class="cursor-pointer bg-gray-700 text-gray-200 px-2 py-1 rounded w-full" onchange="filterTable()">
                             <option value="">Todos</option>
                         </select>
                     </th>
                     <th class="py-2 px-4">
-                        <select id="tipoFilter" class="bg-gray-700 text-gray-200 px-2 py-1 rounded w-full" onchange="filterTable()">
+                        <select id="tipoFilter" class="cursor-pointer bg-gray-700 text-gray-200 px-2 py-1 rounded w-full" onchange="filterTable()">
                             <option value="">Todos</option>
                         </select>
                     </th>
@@ -223,7 +270,7 @@
                     <th class="py-2 px-4 hidden sm:table-cell">
                         <input id="consFilter" type="text" placeholder="Filtrar por CONTRAS..." class="bg-gray-700 text-gray-200 px-2 py-1 rounded border border-gray-600 w-full" oninput="filterTable()">
                     </th>
-                    <th class="hidden sm:table-cell" colspan="2"></th>
+                    <th class="sm:table-cell" colspan="2"></th>
                 </tr>
             </thead>
             <tbody id="toolsTable" class="divide-y divide-gray-700">
@@ -538,6 +585,18 @@
                     case 4: // Ordenar por Tipo
                         valA = a.tipo ? a.tipo.toLowerCase() : "";
                         valB = b.tipo ? b.tipo.toLowerCase() : "";
+                        break;
+                    case 5: // Ordenar por Description
+                        valA = a.descripcion ? a.descripcion.toLowerCase() : "";
+                        valB = b.descripcion ? b.descripcion.toLowerCase() : "";
+                        break;
+                    case 6: // Ordenar por pros
+                        valA = a.pros ? a.pros.toLowerCase() : "";
+                        valB = b.pros ? b.pros.toLowerCase() : "";
+                        break;
+                    case 7: // Ordenar por contras
+                        valA = a.contras ? a.contras.toLowerCase() : "";
+                        valB = b.contras ? b.contras.toLowerCase() : "";
                         break;
                     default:
                         return 0;
